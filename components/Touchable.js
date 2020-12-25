@@ -11,7 +11,7 @@ const Touchable = ({ navigation, name, palette }) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ColorPalette', {
+        navigation.push('ColorPalette', {
           paletteName: name,
           colors: palette,
         })
