@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 //import Touchable from '../components/Touchable';
 import PalettePreview from '../components/PalettePreview';
 import { COLORS, RAINBOW, FRONTEND_MASTERS } from '../helpers/helpers';
@@ -14,6 +14,8 @@ const url = 'https://color-palette-api.kadikraman.now.sh/palettes';
 
 const Home = ({ navigation }) => {
   const [palettes, setPalettes] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const handleFetchPalettes = useCallback(async () => {
     const result = await fetch(url);
     if (result.ok) {
@@ -21,9 +23,19 @@ const Home = ({ navigation }) => {
       setPalettes(colours);
     }
   }, []);
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await handleFetchPalettes();
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     handleFetchPalettes();
   }, []);
+
   return (
     //<View>
     {
@@ -47,6 +59,9 @@ const Home = ({ navigation }) => {
             palette={item}
           />
         )}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
       />
     )
     //</View>
