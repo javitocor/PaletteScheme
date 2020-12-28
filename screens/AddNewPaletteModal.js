@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: 'white',
+    fontWeight: 'bold',
   },
 });
 
