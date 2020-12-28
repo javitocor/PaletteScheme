@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 //import Touchable from '../components/Touchable';
 import PalettePreview from '../components/PalettePreview';
 import { COLORS, RAINBOW, FRONTEND_MASTERS } from '../helpers/helpers';
@@ -12,7 +19,8 @@ const COLOR_PALETTES = [
 
 const url = 'https://color-palette-api.kadikraman.now.sh/palettes';
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
+  const newPalette = route.params ? route.params.newPalette : null;
   const [palettes, setPalettes] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -35,6 +43,12 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     handleFetchPalettes();
   }, []);
+
+  useEffect(() => {
+    if (newPalette) {
+      setPalettes((current) => [newPalette, ...current]);
+    }
+  }, [newPalette]);
 
   return (
     //<View>
@@ -62,6 +76,16 @@ const Home = ({ navigation }) => {
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }
+        ListHeaderComponent={
+          <TouchableOpacity
+            style={styles.zone}
+            onPress={() => {
+              navigation.navigate('AddNewPalette');
+            }}
+          >
+            <Text style={styles.text}>Add a color scheme</Text>
+          </TouchableOpacity>
+        }
       />
     )
     //</View>
@@ -73,6 +97,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: 'white',
+  },
+  text: {
+    fontWeight: 'bold',
+    color: 'teal',
+    fontSize: 25,
+  },
+  zone: {
+    paddingVertical: 10,
   },
 });
 
